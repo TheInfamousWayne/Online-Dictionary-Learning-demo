@@ -25,10 +25,10 @@ device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 ####################################
 
 class DictLearn(nn.Module):
-    def __init__(self,m):
+    def __init__(self, m, n_features):
         super(DictLearn, self).__init__()
 
-        self.W = nn.Parameter(torch.randn(28*28, m, requires_grad=False))
+        self.W = nn.Parameter(torch.randn(n_features, m, requires_grad=False))
         
         # normalization
         self.W.data = NormDict(self.W.data)
@@ -49,7 +49,7 @@ class DictLearn(nn.Module):
         
         # Reconstructing
         self.W.requires_grad_(True)
-        X = torch.mm(Gamma,self.W.transpose(1,0))
+        X = torch.mm(Gamma,self.W.transpose(1,0).type(torch.DoubleTensor).to(device))
         
         # sparsity
         NNZ = np.count_nonzero(Gamma.cpu().data.numpy())/Gamma.shape[0]
@@ -65,7 +65,7 @@ def hard_threshold_k(X, k):
     Gamma = X.clone()
     m = X.data.shape[1]
     a,_ = torch.abs(Gamma).data.sort(dim=1,descending=True)
-    T = torch.mm(a[:,k].unsqueeze(1),torch.Tensor(np.ones((1,m))).to(device))
+    T = torch.mm(a[:,k].unsqueeze(1), torch.Tensor(np.ones((1,m))).type(torch.DoubleTensor).to(device))
     mask = Variable(torch.Tensor((np.abs(Gamma.data.cpu().numpy())>T.cpu().numpy()) + 0.)).to(device)
     Gamma = Gamma * mask
     return Gamma#, mask.data.nonzero()
@@ -87,6 +87,10 @@ def IHT(Y,W,K):
     
     c = PowerMethod(W)
     eta = 1/c
+
+    Y = Y.type(torch.DoubleTensor).to(device)
+    W = W.type(torch.DoubleTensor).to(device)
+
     Gamma = hard_threshold_k(torch.mm(Y,eta*W),K)    
     residual = torch.mm(Gamma, W.transpose(1,0)) - Y
     IHT_ITER = 50
