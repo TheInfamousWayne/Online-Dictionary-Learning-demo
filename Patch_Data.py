@@ -31,7 +31,7 @@ print(torch.cuda.is_available(), torch.cuda.device_count())
 
 
 # Hyper Parameters
-EPOCH = 50
+EPOCH = 150
 BATCH_SIZE = 1000
 LR = .5  # learning rate
 MNT = 0.9   # momentum variable
@@ -172,7 +172,7 @@ for epoch in range(EPOCH):
 
 
 import pickle
-with open('dict_learner.pkl', 'wb') as fid:
+with open(f'dict_learner_{EPOCH}_epochs.pkl', 'wb') as fid:
     pickle.dump(model, fid)
 
 
@@ -185,7 +185,7 @@ plt.plot(Err); plt.grid(); plt.title('Reconstruction Error'); plt.xlabel('mini-b
 plt.subplot(1,2,2)
 plt.plot(Loss); plt.grid(); plt.title('Loss Evolution'); plt.xlabel('epoch')
 plt.show(); 
-plt.savefig("reconstruction.jpg")
+plt.savefig(f"reconstruction_{EPOCH}_epochs.jpg")
 
 
 # In[88]:
@@ -201,7 +201,7 @@ plt.figure(figsize=(15,15))
 plt.imshow(rescale(M1,4,mode='constant'),cmap='gray')
 plt.axis('off')
 plt.show()
-plt.savefig("dict.jpg")
+plt.savefig(f"dict_{EPOCH}_epochs.jpg")
 
 
 # In[90]:
