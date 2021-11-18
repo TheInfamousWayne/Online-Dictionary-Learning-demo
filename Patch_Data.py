@@ -26,6 +26,10 @@ from torchvision import transforms
 # matplotlib.use('TkAgg')
 import ipdb
 
+
+print(torch.cuda.is_available(), torch.cuda.device_count())
+
+
 # Hyper Parameters
 EPOCH = 50
 BATCH_SIZE = 1000
