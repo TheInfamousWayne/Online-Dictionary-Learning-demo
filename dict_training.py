@@ -174,9 +174,10 @@ class Dictionary_Learning(object):
         plt.subplot(1, 2, 2)
         plt.plot(Loss); plt.grid(); plt.title('Loss Evolution'); plt.xlabel('epoch')
         plt.show();
-        file_name = self.config_file['file']['name']
-        path = Path(f"saved/dictionary/{file_name}/plots/").mkdir(parents=True, exist_ok=True)
-        plt.savefig(path / f"loss_evolution_{EPOCH}_epochs.jpg")
+        file_name = self.config_file['file']['name'][:-5]
+        path = Path(f"saved/dictionary/{file_name}/plots/")
+        path.mkdir(parents=True, exist_ok=True)
+        plt.savefig(str(path / f"loss_evolution_{EPOCH}_epochs.jpg"))
 
         # Sample of Trained Dictionary Elements
         W = self.model.cpu().W.data.numpy().copy()
@@ -188,7 +189,7 @@ class Dictionary_Learning(object):
         plt.savefig(f"dict_{EPOCH}_epochs.jpg")
 
     def save_model(self):
-        file_name = self.config_file['file']['name']
+        file_name = self.config_file['file']['name'][:-5]
         EPOCH = self.config_file['dictionary']['epochs']
         path_gpu = Path(f"saved/dictionary/{file_name}/gpu/").mkdir(parents=True, exist_ok=True)
         path_cpu = Path(f"saved/dictionary/{file_name}/cpu/").mkdir(parents=True, exist_ok=True)
