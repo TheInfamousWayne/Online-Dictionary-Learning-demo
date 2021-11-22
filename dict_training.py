@@ -191,8 +191,10 @@ class Dictionary_Learning(object):
     def save_model(self):
         file_name = self.config_file['file']['name'][:-5]
         EPOCH = self.config_file['dictionary']['epochs']
-        path_gpu = Path(f"saved/dictionary/{file_name}/gpu/").mkdir(parents=True, exist_ok=True)
-        path_cpu = Path(f"saved/dictionary/{file_name}/cpu/").mkdir(parents=True, exist_ok=True)
+        path_gpu = Path(f"saved/dictionary/{file_name}/gpu/")
+        path_gpu.mkdir(parents=True, exist_ok=True)
+        path_cpu = Path(f"saved/dictionary/{file_name}/cpu/")
+        path_cpu.mkdir(parents=True, exist_ok=True)
 
         with open(str(path_gpu / f'dict_model_{EPOCH}_epochs.pkl'), 'wb') as f:
             pickle.dump(self.model, f)
