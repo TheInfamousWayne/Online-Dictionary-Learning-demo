@@ -85,7 +85,7 @@ class Dictionary_Learning(object):
         data_transform = transforms.Compose([D.ToTensor()])
         dict_dataset = D.DictionaryDatasetSingleImage(
             # img_path=f'{project_dir}/data/slides/{file_name}',
-            img_path=f'/data/slides/{file_name}',
+            img_path=f'data/slides/{file_name}',
             hyperparameters=self.hyperparameters,
             transform=data_transform)
         dataloader = D.DataLoader(dict_dataset, batch_size=batch_size, shuffle=True, num_workers=0)
