@@ -44,28 +44,32 @@ def load_config(config_file_path):
 
 class Dictionary_Learning(object):
 
-    def __init__(self, config_file, train=True, load_model=None):
+    def __init__(self, config_file, train=True, load_model_type=None):
+        torch.cuda.empty_cache()
         if type(config_file) is not dict:
             self.config_file = load_config(config_file)
         else:
             self.config_file = config_file
 
         self.device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-        self.hyperparameters = self.set_hyperparameters()
-
-        self.dataset, self.dataloader = self.torch_data_loader()
-        self.model = self.define_model()
 
         if train:
+            self.hyperparameters = self.set_hyperparameters()
+            self.dataset, self.dataloader = self.torch_data_loader()
+
+            self.model = self.define_model()
+
             self.train_model()
             self.save_model()
             self.save_config()
 
         else:
-            if load_model == "gpu":
+            if load_model_type == "gpu":
                 self.model = self.load_model(return_cpu_model=False)
             else:
                 self.model = self.load_model(return_cpu_model=True)
+
+        torch.cuda.empty_cache()
 
     def define_model(self):
         n_features = self.config_file['dictionary']['filter_size'] ** 2 * self.config_file['file']['n_channels']
@@ -74,14 +78,14 @@ class Dictionary_Learning(object):
         return model
 
     def torch_data_loader(self):
-
         project_dir = os.getenv("PROJECT_DIR")
         file_name = self.config_file['file']['name']
         batch_size = self.config_file['dictionary']['batch_size']
 
         data_transform = transforms.Compose([D.ToTensor()])
         dict_dataset = D.DictionaryDatasetSingleImage(
-            img_path=f'{project_dir}/data/slides/{file_name}',
+            # img_path=f'{project_dir}/data/slides/{file_name}',
+            img_path=f'/data/slides/{file_name}',
             hyperparameters=self.hyperparameters,
             transform=data_transform)
         dataloader = D.DataLoader(dict_dataset, batch_size=batch_size, shuffle=True, num_workers=0)
@@ -100,6 +104,7 @@ class Dictionary_Learning(object):
             "batch_size": config['dictionary']['batch_size'],
             "learning_rate": config['dictionary']['learning_rate'],
             "momentum": config['dictionary']['momentum'],
+            "file_name": config['file']['name']
         }
         return hyperparameters
 
@@ -198,7 +203,7 @@ class Dictionary_Learning(object):
 
     def save_config(self):
         file_name = self.config_file['file']['name'][:-5]  # name without extention
-        with open(f"configs/{file_name}", "w") as f:
+        with open(f"configs/{file_name}.yml", "w") as f:
             yaml.dump(self.config_file, f, default_flow_style=False)
 
     def load_model(self, return_cpu_model=False):
