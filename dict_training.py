@@ -186,7 +186,7 @@ class Dictionary_Learning(object):
         plt.imshow(rescale(M1, 4, mode='constant'), cmap='gray')
         plt.axis('off')
         plt.show()
-        plt.savefig(f"dict_{EPOCH}_epochs.jpg")
+        plt.savefig(str(path / f"dict_{EPOCH}_epochs.jpg"))
 
     def save_model(self):
         file_name = self.config_file['file']['name'][:-5]
