@@ -51,7 +51,7 @@ class DictLearn(nn.Module):
         self.W.requires_grad_(True)
         X = torch.mm(Gamma,self.W.transpose(1,0).type(torch.DoubleTensor).to(device))
         
-        # sparsity
+        # sparsity (number of nonzero)
         NNZ = np.count_nonzero(Gamma.cpu().data.numpy())/Gamma.shape[0]
         return X, Gamma, errIHT
         
