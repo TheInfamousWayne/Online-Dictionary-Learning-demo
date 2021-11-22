@@ -215,12 +215,12 @@ class Dictionary_Learning(object):
         path_cpu = self.config_file['saved']['cpu_dict_model']
 
         if return_cpu_model is False:
-            with open(path_gpu, 'rb') as f:
+            with open(str(path_gpu), 'rb') as f:
                 dict_model_gpu = pickle.load(f)
             return dict_model_gpu
 
         else:
-            with open(path_cpu, 'rb') as f:
+            with open(str(path_cpu), 'rb') as f:
                 dict_model_cpu = pickle.load(f)
             return dict_model_cpu
 
