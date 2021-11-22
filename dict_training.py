@@ -202,8 +202,10 @@ class Dictionary_Learning(object):
         with open(str(path_cpu / f'dict_model_{EPOCH}_epochs.pkl'), 'wb') as f:
             pickle.dump(self.model.to('cpu'), f)
 
-        self.config_file['saved']['gpu_dict_model'] = str(path_gpu / f'dict_learner_{EPOCH}_epochs.pkl')
-        self.config_file['saved']['cpu_dict_model'] = str(path_cpu / f'dict_learner_{EPOCH}_epochs.pkl')
+        project_dir = Path(os.getenv('PROJECT_DIR'))
+
+        self.config_file['saved']['gpu_dict_model'] = str(project_dir / path_gpu / f'dict_learner_{EPOCH}_epochs.pkl')
+        self.config_file['saved']['cpu_dict_model'] = str(project_dir / path_cpu / f'dict_learner_{EPOCH}_epochs.pkl')
 
     def save_config(self):
         file_name = self.config_file['file']['name'][:-5]  # name without extention
