@@ -130,6 +130,7 @@ class Dictionary_Learning(object):
         Err = []
 
         for epoch in range(EPOCH):
+            print(f"EPOCH: {EPOCH}")
             for step, sample in enumerate(self.dataloader):
                 x = sample['image']
                 b_x = (x.view(x.shape[0], -1)).double().to(self.device)  # batch x, shape (batch, 28*28)
